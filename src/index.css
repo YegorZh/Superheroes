@@ -7,6 +7,25 @@
 }
 
 #root {
+  @apply flex flex-col bg-stone-200 text-stone-800;
   min-height: var(--app-height);
-  min-width: 100vw;
+  width: 100vw;
+  max-width: 100%;
+}
+
+textarea,
+input {
+  @apply rounded bg-stone-100 py-2 px-3 text-inherit focus:outline-stone-800;
+}
+
+.scrollbar::-webkit-scrollbar {
+  @apply h-4 w-4;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  @apply rounded-b-sm bg-stone-300;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  @apply rounded-md border-4 border-solid border-stone-300 bg-stone-800 hover:bg-red-700;
 }
