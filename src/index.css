@@ -7,6 +7,6 @@
 }
 
 #root {
-  height: var(--app-height);
-  width: 100vw;
+  min-height: var(--app-height);
+  min-width: 100vw;
 }
