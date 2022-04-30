@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GenericButton from '../../../reusable/GenericButton';
 import HeroImages from './HeroImages';
 
@@ -7,7 +7,7 @@ type Hero = {
   nickname: string;
   realName?: string;
   originDescription?: string;
-  superpowers?: string[];
+  superpowers?: string;
   catchPhrase?: string;
   images: string[];
 };
@@ -21,6 +21,12 @@ const NewHeroPage: React.FC = () => {
       key: 'originDescription',
       textfield: true,
       placeholder: "Write heroes' origin story...",
+    },
+    {
+      name: 'Superpowers:',
+      key: 'superpowers',
+      textfield: true,
+      placeholder: "Write heroes' superpowers...",
     },
     {
       name: 'Catch Phrase:',
@@ -40,6 +46,7 @@ const NewHeroPage: React.FC = () => {
     'https://thelandscapephotoguy.com/wp-content/uploads/2019/01/landscape%20new%20zealand%20S-shape.jpg',
   ]);
   const [newImage, setNewImage] = useState('');
+  const [imageAdded, setImageAdded] = useState(false);
   const [newHero, setNewHero] = useState<Hero>({ nickname: '', images: [] });
   const onChangeHandler = (key: string, value: string) => {
     setNewHero((oldHero) => {
@@ -48,47 +55,52 @@ const NewHeroPage: React.FC = () => {
       return outHero;
     });
   };
-  const imagesRef = useRef<HTMLDivElement>(null);
 
   const addImageHandler = () => {
     setImages((OldImages) => [...OldImages, newImage]);
-    imagesRef.current?.scrollTo(0, imagesRef.current.scrollHeight);
+    setImageAdded(true);
   };
 
+  useEffect(() => {
+    if (imageAdded) setImageAdded(false);
+  }, [imageAdded]);
+
   return (
-    <div className="my-8 flex w-full max-w-xl flex-col gap-3 px-12">
-      {fields.map((field, i) =>
-        field.textfield ? (
-          <label key={i} className="flex flex-col gap-1">
-            <span className="text-xl font-bold">{field.name}</span>
-            <textarea
-              value={newHero[field.key]}
-              placeholder={field.placeholder}
-              onChange={(event) =>
-                onChangeHandler(field.key, event.target.value)
-              }
-              rows={4}
-              className="w-full resize-none"
-            />
-          </label>
-        ) : (
-          <label key={i} className="flex flex-col gap-1">
-            <span className="text-xl font-bold">{field.name}</span>
-            <input
-              value={newHero[field.key]}
-              placeholder={field.placeholder}
-              onChange={(event) =>
-                onChangeHandler(field.key, event.target.value)
-              }
-              className="w-64"
-            />
-          </label>
-        )
-      )}
-      <div className="space-y-2">
+    <div className="my-8 flex w-full flex-col gap-3 px-12">
+      <div className="max-w-lg space-y-3">
+        {fields.map((field, i) =>
+          field.textfield ? (
+            <label key={i} className=" flex flex-col gap-1">
+              <h2 className="text-xl font-bold">{field.name}</h2>
+              <textarea
+                className="scrollbar w-full resize-none"
+                value={newHero[field.key]}
+                placeholder={field.placeholder}
+                onChange={(event) =>
+                  onChangeHandler(field.key, event.target.value)
+                }
+                rows={4}
+              />
+            </label>
+          ) : (
+            <label key={i} className="flex flex-col gap-1">
+              <h3 className="text-xl font-bold">{field.name}</h3>
+              <input
+                className="w-64"
+                value={newHero[field.key]}
+                placeholder={field.placeholder}
+                onChange={(event) =>
+                  onChangeHandler(field.key, event.target.value)
+                }
+              />
+            </label>
+          )
+        )}
+      </div>
+      <div className="max-w-2xl space-y-2">
         <div className="text-xl font-bold">Images:</div>
-        <div className="flex gap-2">
-          <GenericButton onClick={() => addImageHandler}>
+        <div className="flex gap-4">
+          <GenericButton onClick={() => addImageHandler()}>
             Add Image
           </GenericButton>
           <input
@@ -100,8 +112,14 @@ const NewHeroPage: React.FC = () => {
           />
         </div>
       </div>
-      <HeroImages images={images} setImages={setImages} />
-      <GenericButton className="mt-4">Add Hero</GenericButton>
+      <div className="max-w-4xl space-y-4">
+        <HeroImages
+          images={images}
+          setImages={setImages}
+          scrollToEnd={imageAdded}
+        />
+        <GenericButton className="mt-4">Add Hero</GenericButton>
+      </div>
     </div>
   );
 };

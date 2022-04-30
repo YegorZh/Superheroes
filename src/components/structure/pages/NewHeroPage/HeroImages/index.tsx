@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import IconButton from '../../../../reusable/IconButton';
 
 const HeroImages: React.FC<{
   images: string[];
   setImages: React.Dispatch<React.SetStateAction<string[]>>;
   ref?: React.RefObject<HTMLDivElement>;
-}> = ({ images, setImages }) => {
+  scrollToEnd?: boolean;
+}> = ({ images, setImages, scrollToEnd }) => {
   const moveImageLeft = (array: string[], i: number) => {
     if (i <= 0)
       throw new Error("Can't move array item left when it's at position <= 0.");
@@ -27,17 +28,47 @@ const HeroImages: React.FC<{
   };
 
   const size = 'h-64 max-w-[300px]';
+  const ref = useRef<HTMLDivElement | null>(null);
+  const imgRef = useRef<ParentNode | null | undefined>(null);
+  const sideRef = useRef<{ right: boolean } | null>(null);
 
+  useEffect(() => {
+    if (scrollToEnd) {
+      ref.current?.scrollTo({
+        left: ref.current.scrollWidth,
+        behavior: 'smooth',
+      });
+    }
+  }, [scrollToEnd]);
+
+  useEffect(() => {
+    if (imgRef?.current && ref?.current) {
+      let sibling = (imgRef.current as HTMLElement).previousSibling;
+      if (sideRef.current?.right)
+        sibling = (imgRef.current as HTMLElement).nextSibling;
+      if (sibling) {
+        (sibling as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest',
+        });
+      }
+    }
+  }, [sideRef.current]);
   return (
-    <div className="scrollbar flex snap-x gap-4 overflow-y-auto">
+    <div ref={ref} className="scrollbar flex gap-4 overflow-y-auto">
       {images.map((image, i) => (
         <div key={i}>
           <div className="flex justify-between">
             <IconButton
               disabled={i === 0}
-              onClick={() =>
-                setImages((oldImages) => moveImageLeft(oldImages, i))
-              }
+              onClick={(event) => {
+                setImages((oldImages) => moveImageLeft(oldImages, i));
+                imgRef.current = (
+                  event.target as HTMLButtonElement
+                ).parentNode?.parentNode;
+                sideRef.current = { right: false };
+              }}
             >
               {'<<'}
             </IconButton>
@@ -54,9 +85,13 @@ const HeroImages: React.FC<{
             </IconButton>
             <IconButton
               disabled={i === images.length - 1}
-              onClick={() =>
-                setImages((oldImages) => moveImageRight(oldImages, i))
-              }
+              onClick={(event) => {
+                setImages((oldImages) => moveImageRight(oldImages, i));
+                imgRef.current = (
+                  event.target as HTMLButtonElement
+                ).parentNode?.parentNode;
+                sideRef.current = { right: true };
+              }}
             >
               {'>>'}
             </IconButton>
@@ -64,7 +99,7 @@ const HeroImages: React.FC<{
           <img
             src={image}
             alt={`Hero ${i}`}
-            className={`mt-2 snap-center rounded object-fill ${size}`}
+            className={`mt-2 rounded object-fill ${size}`}
           />
         </div>
       ))}
