@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import {
+  validateImageLink,
+  validateImages,
+  validateNickname,
+} from '../../../../features/validation';
+import ErrorMessage from '../../../reusable/ErrorMessage';
 import GenericButton from '../../../reusable/GenericButton';
 import HeroImages from './HeroImages';
 
-type Hero = {
+export type Hero = {
   readonly [key: string]: string | string[] | undefined;
   nickname: string;
   realName?: string;
@@ -35,19 +41,12 @@ const NewHeroPage: React.FC = () => {
       placeholder: `“Look, up in the sky, it's a bird, it's a plane, it's Superman!”`,
     },
   ];
-  const [images, setImages] = useState([
-    'https://static.wikia.nocookie.net/marvelcinematicuniverse/images/5/55/Friendly_Neighborhood_Spider-Man_-_Profile_Pic.png',
-    'https://upload.wikimedia.org/wikipedia/en/a/aa/Hulk_%28circa_2019%29.png',
-    'https://static.wikia.nocookie.net/marvelcinematicuniverse/images/1/1b/SamWilson-CaptainAmerica.png',
-    'https://thelandscapephotoguy.com/wp-content/uploads/2019/01/landscape%20new%20zealand%20S-shape.jpg',
-    'https://static.wikia.nocookie.net/marvelcinematicuniverse/images/5/55/Friendly_Neighborhood_Spider-Man_-_Profile_Pic.png',
-    'https://upload.wikimedia.org/wikipedia/en/a/aa/Hulk_%28circa_2019%29.png',
-    'https://static.wikia.nocookie.net/marvelcinematicuniverse/images/1/1b/SamWilson-CaptainAmerica.png',
-    'https://thelandscapephotoguy.com/wp-content/uploads/2019/01/landscape%20new%20zealand%20S-shape.jpg',
-  ]);
+
+  const [newHero, setNewHero] = useState<Hero>({ nickname: '', images: [] });
   const [newImage, setNewImage] = useState('');
   const [imageAdded, setImageAdded] = useState(false);
-  const [newHero, setNewHero] = useState<Hero>({ nickname: '', images: [] });
+  const [error, setError] = useState<string>('');
+
   const onChangeHandler = (key: string, value: string) => {
     setNewHero((oldHero) => {
       const outHero = { ...oldHero };
@@ -57,8 +56,22 @@ const NewHeroPage: React.FC = () => {
   };
 
   const addImageHandler = () => {
-    setImages((OldImages) => [...OldImages, newImage]);
+    const error = validateImageLink(newImage);
+    if (error) return setError(error);
+    setNewHero((oldHero) => ({
+      ...oldHero,
+      images: [...oldHero.images, newImage],
+    }));
+    setNewImage('');
+    setError('');
     setImageAdded(true);
+  };
+
+  const addHeroHandler = () => {
+    const error =
+      validateNickname(newHero.nickname) || validateImages(newHero.images);
+    if (error) return setError(error);
+    setError('');
   };
 
   useEffect(() => {
@@ -108,17 +121,24 @@ const NewHeroPage: React.FC = () => {
             placeholder="Enter image link..."
             className="w-full"
             value={newImage}
-            onChange={(event) => setNewImage(event.target.value)}
+            onChange={(event) =>
+              setNewImage(event.target.value.replaceAll(' ', ''))
+            }
+          />
+        </div>
+        <div className="max-w-4xl space-y-4">
+          <HeroImages
+            images={newHero.images}
+            setNewHero={setNewHero}
+            scrollToEnd={imageAdded}
           />
         </div>
       </div>
-      <div className="max-w-4xl space-y-4">
-        <HeroImages
-          images={images}
-          setImages={setImages}
-          scrollToEnd={imageAdded}
-        />
-        <GenericButton className="mt-4">Add Hero</GenericButton>
+      <div>
+        {error && <ErrorMessage message={error} />}
+        <GenericButton className="mt-4" onClick={() => addHeroHandler()}>
+          Add Hero
+        </GenericButton>
       </div>
     </div>
   );

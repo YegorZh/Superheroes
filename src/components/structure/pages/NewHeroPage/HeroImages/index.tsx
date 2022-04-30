@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from 'react';
+import { Hero } from '..';
 import IconButton from '../../../../reusable/IconButton';
 
 const HeroImages: React.FC<{
   images: string[];
-  setImages: React.Dispatch<React.SetStateAction<string[]>>;
+  setNewHero: React.Dispatch<React.SetStateAction<Hero>>;
   ref?: React.RefObject<HTMLDivElement>;
   scrollToEnd?: boolean;
-}> = ({ images, setImages, scrollToEnd }) => {
+}> = ({ images, setNewHero, scrollToEnd }) => {
   const moveImageLeft = (array: string[], i: number) => {
     if (i <= 0)
       throw new Error("Can't move array item left when it's at position <= 0.");
@@ -63,7 +64,10 @@ const HeroImages: React.FC<{
             <IconButton
               disabled={i === 0}
               onClick={(event) => {
-                setImages((oldImages) => moveImageLeft(oldImages, i));
+                setNewHero((oldHero) => ({
+                  ...oldHero,
+                  images: moveImageLeft(oldHero.images, i),
+                }));
                 imgRef.current = (
                   event.target as HTMLButtonElement
                 ).parentNode?.parentNode;
@@ -73,20 +77,23 @@ const HeroImages: React.FC<{
               {'<<'}
             </IconButton>
             <IconButton
-              onClick={() =>
-                setImages((oldImages) => {
-                  const out = [...oldImages];
-                  out.splice(i, 1);
-                  return out;
-                })
-              }
+              onClick={() => {
+                setNewHero((oldHero) => {
+                  const newHero = { ...oldHero };
+                  newHero.images.splice(i, 1);
+                  return newHero;
+                });
+              }}
             >
               X
             </IconButton>
             <IconButton
               disabled={i === images.length - 1}
               onClick={(event) => {
-                setImages((oldImages) => moveImageRight(oldImages, i));
+                setNewHero((oldHero) => ({
+                  ...oldHero,
+                  images: moveImageRight(oldHero.images, i),
+                }));
                 imgRef.current = (
                   event.target as HTMLButtonElement
                 ).parentNode?.parentNode;

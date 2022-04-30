@@ -9,7 +9,7 @@ const IconButton: React.FC<{
   <button
     disabled={disabled}
     onClick={onClick}
-    className={`font-bangers text-2xl text-stone-800 hover:text-red-700 active:text-red-900 ${className} ${
+    className={`select-none font-bangers text-2xl text-stone-800 hover:text-red-700 active:text-red-900 ${className} ${
       disabled && 'pointer-events-none opacity-10'
     }`}
   >
