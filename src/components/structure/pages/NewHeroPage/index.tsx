@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { Hero } from '../../../../features/types';
 import {
   validateImageLink,
   validateImages,
@@ -9,16 +10,6 @@ import {
 import ErrorMessage from '../../../reusable/ErrorMessage';
 import GenericButton from '../../../reusable/GenericButton';
 import HeroImages from './HeroImages';
-
-export type Hero = {
-  readonly [key: string]: string | string[] | undefined;
-  nickname: string;
-  realName?: string;
-  originDescription?: string;
-  superpowers?: string;
-  catchPhrase?: string;
-  images: string[];
-};
 
 const NewHeroPage: React.FC = () => {
   const fields = [
@@ -48,6 +39,7 @@ const NewHeroPage: React.FC = () => {
   const [newImage, setNewImage] = useState<string>('');
   const [imageAdded, setImageAdded] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
   const [id, setId] = useState<string>('');
 
   const onChangeHandler = (key: string, value: string) => {
@@ -75,13 +67,15 @@ const NewHeroPage: React.FC = () => {
       validateNickname(newHero.nickname) || validateImages(newHero.images);
     if (error) return setError(error);
     setError('');
+    setIsRequesting(true);
     axios
       .post('https://ninjas-api.herokuapp.com/heroes', newHero)
       .then((response) => {
         console.log(response);
         if (response.status === 200) setId(response.data._id);
       })
-      .catch((err) => setError(err.response?.data?.error || err.message));
+      .catch((err) => setError(err.response?.data?.error || err.message))
+      .finally(() => setIsRequesting(false));
   };
 
   useEffect(() => {
@@ -147,7 +141,11 @@ const NewHeroPage: React.FC = () => {
       </div>
       <div>
         {error && <ErrorMessage message={error} />}
-        <GenericButton className="mt-4" onClick={() => addHeroHandler()}>
+        <GenericButton
+          disabled={isRequesting}
+          className="mt-4"
+          onClick={() => addHeroHandler()}
+        >
           Add Hero
         </GenericButton>
       </div>

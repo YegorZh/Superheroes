@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Hero } from '..';
+import { Hero } from '../../../../../features/types';
 import IconButton from '../../../../reusable/IconButton';
 
 const HeroImages: React.FC<{
@@ -106,7 +106,7 @@ const HeroImages: React.FC<{
           <img
             src={image}
             alt={`Hero ${i}`}
-            className={`mt-2 rounded object-fill ${size}`}
+            className={`mt-2 rounded object-cover ${size}`}
           />
         </div>
       ))}
