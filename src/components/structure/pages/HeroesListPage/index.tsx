@@ -4,7 +4,10 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../features/redux/hooks';
-import { setPage } from '../../../../features/redux/paginationSlice';
+import {
+  setItemsPerPage,
+  setPage,
+} from '../../../../features/redux/paginationSlice';
 import { Hero } from '../../../../features/types';
 import ErrorMessage from '../../../reusable/ErrorMessage';
 import IconButton from '../../../reusable/IconButton';
@@ -15,13 +18,15 @@ const HeroesListPage: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [deleteId, setDeleteId] = useState<{ value?: string } | null>(null);
   const [isRequesting, setIsRequesting] = useState<boolean>(false);
+  const dispatcher = useAppDispatch();
   const { currentPage, itemsPerPage } = useAppSelector(
     (state) => state.pagination
   );
-  const isFirstPage = currentPage < 1;
+  const isFirstPage = currentPage <= 0;
   const lastPage = heroList ? Math.ceil(heroList.length / itemsPerPage) : -1;
-  const isLastPage = heroList && currentPage > lastPage - 2;
-  const dispatcher = useAppDispatch();
+  if (lastPage > -1 && currentPage > lastPage - 1)
+    dispatcher(setPage(lastPage - 1));
+  const isLastPage = heroList && currentPage >= lastPage - 1;
 
   useEffect(() => {
     setIsRequesting(true);
@@ -59,22 +64,51 @@ const HeroesListPage: React.FC = () => {
             </div>
           ))}
       </div>
-      <div className="mx-auto flex items-center gap-4 font-bangers text-xl">
-        <IconButton
-          disabled={isFirstPage}
-          onClick={() => dispatcher(setPage(currentPage - 1))}
-        >
-          {'<<'}
-        </IconButton>
-        <span>
-          Page {currentPage + 1} out of {lastPage < 0 ? '?' : lastPage}
-        </span>
-        <IconButton
-          disabled={isLastPage || false}
-          onClick={() => dispatcher(setPage(currentPage + 1))}
-        >
-          {'>>'}
-        </IconButton>
+      <div className="mx-auto flex flex-col font-bangers text-xl">
+        <div className="flex items-center gap-4">
+          <IconButton
+            disabled={isFirstPage}
+            onClick={() => dispatcher(setPage(currentPage - 1))}
+          >
+            {'<<'}
+          </IconButton>
+          <span>
+            Page{' '}
+            <select
+              value={currentPage}
+              onChange={(event) =>
+                dispatcher(setPage(Number(event.target.value)))
+              }
+              className="mx-2 rounded bg-stone-100 text-center"
+            >
+              {lastPage > -1 &&
+                [...Array(lastPage)].map((_, i) => (
+                  <option value={i}>{i + 1}</option>
+                ))}
+            </select>
+            out of {lastPage < 0 ? '?' : lastPage}
+          </span>
+          <IconButton
+            disabled={isLastPage || false}
+            onClick={() => dispatcher(setPage(currentPage + 1))}
+          >
+            {'>>'}
+          </IconButton>
+        </div>
+        <div className="mx-auto space-x-3">
+          <span className="font-bangers">Items</span>
+          <select
+            className="rounded bg-stone-100 text-center"
+            value={itemsPerPage}
+            onChange={(event) =>
+              dispatcher(setItemsPerPage(Number(event.target.value)))
+            }
+          >
+            {[...Array(Math.min(heroList?.length || 20, 20))].map((_, i) => (
+              <option value={i + 1}>{i + 1}</option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   );
