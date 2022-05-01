@@ -1,3 +1,7 @@
+# Superheroes
+Design is responsive
+
+## Scripts
 ### `npm start`
 
 Runs the app in the development mode.\
@@ -9,3 +13,6 @@ You will also see any lint errors in the console.
 ### `npm run build`
 
 Builds the app for production to the `docs` folder.
+<hr>
+P.S
+Backend can be found <a href="https://github.com/YegorZh/ninjas-back">here</a>
