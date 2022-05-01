@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { deleteHero, getHeroes } from '../../../../features/api';
 import { Hero } from '../../../../features/types';
@@ -21,9 +20,9 @@ const HeroesListPage: React.FC = () => {
   }, [deleteId]);
 
   return (
-    <div className="flex w-full flex-col gap-6 px-12 py-8">
+    <div className="mt-8 flex h-full w-full flex-col gap-6 px-12 py-8">
       {error && <ErrorMessage message={error} />}
-      <div className="flex flex-wrap justify-around gap-x-4 gap-y-8 ">
+      <div className="flex flex-wrap justify-center gap-x-4 gap-y-8 ">
         {heroList?.slice(0, 5).map((hero) => (
           <div key={hero._id}>
             <HeroCard

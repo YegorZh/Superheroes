@@ -8,7 +8,7 @@ import NotFoundPage from '../structure/pages/NotFoundPage';
 
 const App: React.FC = () => {
   return (
-    <HashRouter>
+    <div className="flex min-h-full flex-col">
       <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/heroes" />} />
@@ -18,7 +18,7 @@ const App: React.FC = () => {
         <Route path="/heroes/:id" element={<HeroPage />} />
         <Route path="/*" element={<NotFoundPage />} />
       </Routes>
-    </HashRouter>
+    </div>
   );
 };
 

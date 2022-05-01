@@ -113,7 +113,7 @@ const NewHeroPage: React.FC = () => {
             <label key={i} className="flex flex-col gap-1">
               <h3 className="text-xl font-bold">{field.name}</h3>
               <input
-                className="w-64"
+                className="w-full max-w-[256px]"
                 value={newHero[field.key]}
                 placeholder={field.placeholder}
                 onChange={(event) =>
@@ -124,12 +124,14 @@ const NewHeroPage: React.FC = () => {
           )
         )}
       </div>
-      <div className="max-w-2xl space-y-2">
+      <div className="max-w-2xl space-y-4">
         <div className="text-xl font-bold">Images:</div>
-        <div className="flex gap-4">
-          <GenericButton onClick={() => addImageHandler()}>
-            Add Image
-          </GenericButton>
+        <div className="flex flex-col gap-x-4 gap-y-2 sm:flex-row">
+          <div className="order-last sm:order-first">
+            <GenericButton onClick={() => addImageHandler()}>
+              Add Image
+            </GenericButton>
+          </div>
           <input
             type="text"
             placeholder="Enter image link..."
@@ -148,6 +150,7 @@ const NewHeroPage: React.FC = () => {
           />
         </div>
       </div>
+      <div className="h-1 w-full max-w-3xl bg-red-700" />
       <div>
         {error && <ErrorMessage message={error} />}
         <div className="mt-4">
