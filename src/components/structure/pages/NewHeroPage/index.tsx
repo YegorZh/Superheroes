@@ -142,15 +142,17 @@ const NewHeroPage: React.FC = () => {
             }
           />
         </div>
-        <div className="max-w-4xl space-y-4">
-          <HeroImages
-            images={newHero.images}
-            setNewHero={setNewHero}
-            scrollToEnd={imageAdded}
-          />
-        </div>
+        {newHero.images.length > 0 && (
+          <div className="max-w-4xl space-y-4">
+            <HeroImages
+              images={newHero.images}
+              setNewHero={setNewHero}
+              scrollToEnd={imageAdded}
+            />
+          </div>
+        )}
       </div>
-      <div className="h-1 w-full max-w-3xl bg-red-700" />
+      <div className="mt-4 h-1 w-full max-w-3xl bg-red-700" />
       <div>
         {error && <ErrorMessage message={error} />}
         <div className="mt-4">

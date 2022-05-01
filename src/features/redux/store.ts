@@ -1,7 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
+import paginationSlice from './paginationSlice';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    pagination: paginationSlice,
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;
