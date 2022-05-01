@@ -9,6 +9,8 @@ import {
 } from '../../../../features/validation';
 import ErrorMessage from '../../../reusable/ErrorMessage';
 import GenericButton from '../../../reusable/GenericButton';
+import Separator from '../../../reusable/Separator';
+import SmallTitle from '../../../reusable/SmallTitle';
 import HeroImages from './HeroImages';
 
 const NewHeroPage: React.FC = () => {
@@ -52,7 +54,7 @@ const NewHeroPage: React.FC = () => {
   const [newId, setNewId] = useState<string>('');
 
   useEffect(() => {
-    if (id) getHero(setNewHero, setError, setIsRequesting, id);
+    if (id) getHero(setNewHero, id, setError, setIsRequesting);
     else setNewHero(initialHero);
   }, [id]);
 
@@ -82,9 +84,9 @@ const NewHeroPage: React.FC = () => {
     if (error) return setError(error);
     setError('');
     setIsRequesting(true);
-    if (mode === 'post') postHero(newHero, setError, setIsRequesting, setNewId);
-    else if (mode === 'patch')
-      patchHero(newHero, setError, setIsRequesting, setNewId, id);
+    if (mode === 'post') postHero(newHero, setNewId, setError, setIsRequesting);
+    else if (mode === 'patch' && id)
+      patchHero(newHero, setNewId, id, setError, setIsRequesting);
   };
 
   useEffect(() => {
@@ -92,13 +94,13 @@ const NewHeroPage: React.FC = () => {
   }, [imageAdded]);
 
   return (
-    <div className="my-8 flex w-full flex-col gap-3 px-12">
+    <div className="flex w-full flex-col gap-3 py-8 px-12">
       {newId && <Navigate to={`/heroes/${id}`} />}
       <div className="max-w-lg space-y-3">
         {fields.map((field, i) =>
           field.textfield ? (
             <label key={i} className=" flex flex-col gap-1">
-              <h2 className="text-xl font-bold">{field.name}</h2>
+              <SmallTitle text={field.name} />
               <textarea
                 className="scrollbar w-full resize-none"
                 value={newHero[field.key]}
@@ -111,7 +113,7 @@ const NewHeroPage: React.FC = () => {
             </label>
           ) : (
             <label key={i} className="flex flex-col gap-1">
-              <h3 className="text-xl font-bold">{field.name}</h3>
+              <SmallTitle text={field.name} />
               <input
                 className="w-full max-w-[256px]"
                 value={newHero[field.key]}
@@ -124,8 +126,8 @@ const NewHeroPage: React.FC = () => {
           )
         )}
       </div>
-      <div className="max-w-2xl space-y-4">
-        <div className="text-xl font-bold">Images:</div>
+      <div className="max-w-2xl space-y-2">
+        <SmallTitle text="Images:" />
         <div className="flex flex-col gap-x-4 gap-y-2 sm:flex-row">
           <div className="order-last sm:order-first">
             <GenericButton onClick={() => addImageHandler()}>
@@ -152,7 +154,9 @@ const NewHeroPage: React.FC = () => {
           </div>
         )}
       </div>
-      <div className="mt-4 h-1 w-full max-w-3xl bg-red-700" />
+      <div className="mt-4">
+        <Separator />
+      </div>
       <div>
         {error && <ErrorMessage message={error} />}
         <div className="mt-4">

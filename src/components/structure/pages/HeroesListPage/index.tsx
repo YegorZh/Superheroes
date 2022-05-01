@@ -31,8 +31,8 @@ const HeroesListPage: React.FC = () => {
   useEffect(() => {
     setIsRequesting(true);
 
-    if (deleteId)
-      deleteHero(setHeroList, setError, setIsRequesting, deleteId.value);
+    if (typeof deleteId?.value === 'string')
+      deleteHero(setHeroList, deleteId.value, setError, setIsRequesting);
     else getHeroes(setHeroList, setError, setIsRequesting);
   }, [deleteId]);
 
