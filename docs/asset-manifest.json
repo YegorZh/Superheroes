@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Superheroes/static/css/main.78c01a84.css",
+    "main.js": "/Superheroes/static/js/main.475bb794.js",
+    "index.html": "/Superheroes/index.html",
+    "main.78c01a84.css.map": "/Superheroes/static/css/main.78c01a84.css.map",
+    "main.475bb794.js.map": "/Superheroes/static/js/main.475bb794.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.78c01a84.css",
+    "static/js/main.475bb794.js"
+  ]
+}
