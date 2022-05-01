@@ -1,14 +1,22 @@
-import axios, { AxiosStatic } from 'axios';
-import { Hero } from '../types';
+import axios from 'axios';
+import { emptyHero, Hero } from '../types';
 
 const defaultApiInteraction = (
   action: Promise<any>,
-  setError?: (value: React.SetStateAction<string>) => void,
-  setIsRequesting?: (value: React.SetStateAction<boolean>) => void
+  params: {
+    setError?: (value: React.SetStateAction<string>) => void;
+    setIsRequesting?: (value: React.SetStateAction<boolean>) => void;
+    setHero?: React.Dispatch<React.SetStateAction<Hero>>;
+  }
 ) => {
+  const { setError, setIsRequesting, setHero } = params;
   action
+    .then(() => {
+      if (setError) setError('');
+    })
     .catch((err) => {
       if (setError) setError(err.response.data.error || err.message);
+      if (setHero) setHero(emptyHero);
     })
     .finally(() => {
       if (setIsRequesting) setIsRequesting(false);
@@ -24,8 +32,7 @@ const getHeroes = (
     axios
       .get('https://ninjas-api.herokuapp.com/heroes/')
       .then((result) => setHeroList(result.data)),
-    setError,
-    setIsRequesting
+    { setError, setIsRequesting }
   );
 const getHero = (
   setHero: React.Dispatch<React.SetStateAction<Hero>>,
@@ -37,8 +44,7 @@ const getHero = (
     axios
       .get(`https://ninjas-api.herokuapp.com/heroes/${id}`)
       .then((result) => setHero((oldHero) => ({ ...oldHero, ...result.data }))),
-    setError,
-    setIsRequesting
+    { setError, setIsRequesting, setHero }
   );
 
 const postHero = (
@@ -53,8 +59,7 @@ const postHero = (
       .then((result) => {
         setId(result.data._id);
       }),
-    setError,
-    setIsRequesting
+    { setError, setIsRequesting }
   );
 
 const patchHero = (
@@ -68,10 +73,9 @@ const patchHero = (
     axios
       .patch(`https://ninjas-api.herokuapp.com/heroes/${id}`, newHero)
       .then(() => {
-        setId(<string>id);
+        setId(id);
       }),
-    setError,
-    setIsRequesting
+    { setError, setIsRequesting }
   );
 
 const deleteHero = (
@@ -84,8 +88,7 @@ const deleteHero = (
     axios
       .delete('https://ninjas-api.herokuapp.com/heroes/' + id)
       .then((_) => getHeroes(setHeroList, setError, setIsRequesting)),
-    setError,
-    setIsRequesting
+    { setError, setIsRequesting }
   );
 
 export { getHeroes, deleteHero, postHero, patchHero, getHero };

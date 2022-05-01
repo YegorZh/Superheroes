@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getHero, patchHero, postHero } from '../../../../features/api';
-import { Hero } from '../../../../features/types';
+import { emptyHero, Hero } from '../../../../features/types';
 import {
   validateImageLink,
   validateImages,
@@ -38,24 +38,20 @@ const NewHeroPage: React.FC = () => {
   ];
 
   const { id } = useParams();
-  const initialHero: Hero = {
-    nickname: '',
-    realName: '',
-    originDescription: '',
-    catchPhrase: '',
-    superpowers: '',
-    images: [],
-  };
-  const [newHero, setNewHero] = useState<Hero>(initialHero);
+  const navigate = useNavigate();
+  const [newHero, setNewHero] = useState<Hero>(emptyHero);
   const [newImage, setNewImage] = useState<string>('');
   const [imageAdded, setImageAdded] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [isRequesting, setIsRequesting] = useState<boolean>(false);
+  const [doesntExist, setDoesntExist] = useState<boolean>(false);
   const [newId, setNewId] = useState<string>('');
+
+  if (newId) navigate(`/heroes/${newId}`);
 
   useEffect(() => {
     if (id) getHero(setNewHero, id, setError, setIsRequesting);
-    else setNewHero(initialHero);
+    else setNewHero(emptyHero);
   }, [id]);
 
   const onChangeHandler = (key: string, value: string) => {
@@ -95,65 +91,68 @@ const NewHeroPage: React.FC = () => {
 
   return (
     <div className="flex w-full flex-col gap-3 py-8 px-12">
-      {newId && <Navigate to={`/heroes/${id}`} />}
-      <div className="max-w-lg space-y-3">
-        {fields.map((field, i) =>
-          field.textfield ? (
-            <label key={i} className=" flex flex-col gap-1">
-              <SmallTitle text={field.name} />
-              <textarea
-                className="scrollbar w-full resize-none"
-                value={newHero[field.key]}
-                placeholder={field.placeholder}
-                onChange={(event) =>
-                  onChangeHandler(field.key, event.target.value)
-                }
-                rows={4}
-              />
-            </label>
-          ) : (
-            <label key={i} className="flex flex-col gap-1">
-              <SmallTitle text={field.name} />
+      {!(id && doesntExist) && (
+        <div className="space-y-3">
+          <div className="max-w-lg space-y-3">
+            {fields.map((field, i) =>
+              field.textfield ? (
+                <label key={i} className=" flex flex-col gap-1">
+                  <SmallTitle text={field.name} />
+                  <textarea
+                    className="scrollbar w-full resize-none"
+                    value={newHero[field.key]}
+                    placeholder={field.placeholder}
+                    onChange={(event) =>
+                      onChangeHandler(field.key, event.target.value)
+                    }
+                    rows={4}
+                  />
+                </label>
+              ) : (
+                <label key={i} className="flex flex-col gap-1">
+                  <SmallTitle text={field.name} />
+                  <input
+                    className="w-full max-w-[256px]"
+                    value={newHero[field.key]}
+                    placeholder={field.placeholder}
+                    onChange={(event) =>
+                      onChangeHandler(field.key, event.target.value)
+                    }
+                  />
+                </label>
+              )
+            )}
+          </div>
+          <div className="max-w-2xl space-y-2">
+            <SmallTitle text="Images:" />
+            <div className="flex flex-col gap-x-4 gap-y-2 sm:flex-row">
+              <div className="order-last sm:order-first">
+                <GenericButton onClick={() => addImageHandler()}>
+                  Add Image
+                </GenericButton>
+              </div>
               <input
-                className="w-full max-w-[256px]"
-                value={newHero[field.key]}
-                placeholder={field.placeholder}
+                type="text"
+                placeholder="Enter image link..."
+                className="w-full"
+                value={newImage}
                 onChange={(event) =>
-                  onChangeHandler(field.key, event.target.value)
+                  setNewImage(event.target.value.replaceAll(' ', ''))
                 }
               />
-            </label>
-          )
-        )}
-      </div>
-      <div className="max-w-2xl space-y-2">
-        <SmallTitle text="Images:" />
-        <div className="flex flex-col gap-x-4 gap-y-2 sm:flex-row">
-          <div className="order-last sm:order-first">
-            <GenericButton onClick={() => addImageHandler()}>
-              Add Image
-            </GenericButton>
+            </div>
+            {newHero.images.length > 0 && (
+              <div className="max-w-4xl space-y-4">
+                <HeroImages
+                  images={newHero.images}
+                  setNewHero={setNewHero}
+                  scrollToEnd={imageAdded}
+                />
+              </div>
+            )}
           </div>
-          <input
-            type="text"
-            placeholder="Enter image link..."
-            className="w-full"
-            value={newImage}
-            onChange={(event) =>
-              setNewImage(event.target.value.replaceAll(' ', ''))
-            }
-          />
         </div>
-        {newHero.images.length > 0 && (
-          <div className="max-w-4xl space-y-4">
-            <HeroImages
-              images={newHero.images}
-              setNewHero={setNewHero}
-              scrollToEnd={imageAdded}
-            />
-          </div>
-        )}
-      </div>
+      )}
       <div className="mt-4">
         <Separator />
       </div>

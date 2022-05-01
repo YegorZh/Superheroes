@@ -4,7 +4,7 @@ import IconButton from '../../../../reusable/IconButton';
 
 const HeroImages: React.FC<{
   images: string[];
-  setNewHero: React.Dispatch<React.SetStateAction<Hero>>;
+  setNewHero?: React.Dispatch<React.SetStateAction<Hero>>;
   ref?: React.RefObject<HTMLDivElement>;
   scrollToEnd?: boolean;
 }> = ({ images, setNewHero, scrollToEnd }) => {
@@ -55,54 +55,56 @@ const HeroImages: React.FC<{
         });
       }
     }
-  }, [sideRef.current]);
+  });
   return (
     <div ref={ref} className="scrollbar flex gap-4 overflow-y-auto">
       {images.map((image, i) => (
         <div key={i}>
-          <div className="flex justify-between">
-            <IconButton
-              disabled={i === 0}
-              onClick={(event) => {
-                setNewHero((oldHero) => ({
-                  ...oldHero,
-                  images: moveImageLeft(oldHero.images, i),
-                }));
-                imgRef.current = (
-                  event.target as HTMLButtonElement
-                ).parentNode?.parentNode;
-                sideRef.current = { right: false };
-              }}
-            >
-              {'<<'}
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                setNewHero((oldHero) => {
-                  const newHero = { ...oldHero };
-                  newHero.images.splice(i, 1);
-                  return newHero;
-                });
-              }}
-            >
-              X
-            </IconButton>
-            <IconButton
-              disabled={i === images.length - 1}
-              onClick={(event) => {
-                setNewHero((oldHero) => ({
-                  ...oldHero,
-                  images: moveImageRight(oldHero.images, i),
-                }));
-                imgRef.current = (
-                  event.target as HTMLButtonElement
-                ).parentNode?.parentNode;
-                sideRef.current = { right: true };
-              }}
-            >
-              {'>>'}
-            </IconButton>
-          </div>
+          {setNewHero && (
+            <div className="flex justify-between">
+              <IconButton
+                disabled={i === 0}
+                onClick={(event) => {
+                  setNewHero((oldHero) => ({
+                    ...oldHero,
+                    images: moveImageLeft(oldHero.images, i),
+                  }));
+                  imgRef.current = (
+                    event.target as HTMLButtonElement
+                  ).parentNode?.parentNode;
+                  sideRef.current = { right: false };
+                }}
+              >
+                {'<<'}
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  setNewHero((oldHero) => {
+                    const newHero = { ...oldHero };
+                    newHero.images.splice(i, 1);
+                    return newHero;
+                  });
+                }}
+              >
+                X
+              </IconButton>
+              <IconButton
+                disabled={i === images.length - 1}
+                onClick={(event) => {
+                  setNewHero((oldHero) => ({
+                    ...oldHero,
+                    images: moveImageRight(oldHero.images, i),
+                  }));
+                  imgRef.current = (
+                    event.target as HTMLButtonElement
+                  ).parentNode?.parentNode;
+                  sideRef.current = { right: true };
+                }}
+              >
+                {'>>'}
+              </IconButton>
+            </div>
+          )}
           <img
             src={image}
             alt={`Hero ${i}`}

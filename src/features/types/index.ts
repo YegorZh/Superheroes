@@ -8,3 +8,12 @@ export type Hero = {
   readonly _id?: string;
   images: string[];
 };
+
+export const emptyHero = {
+  nickname: '',
+  realName: '',
+  originDescription: '',
+  superpowers: '',
+  catchPhrase: '',
+  images: [],
+};
