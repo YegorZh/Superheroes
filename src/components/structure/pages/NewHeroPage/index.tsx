@@ -36,14 +36,15 @@ const NewHeroPage: React.FC = () => {
   ];
 
   const { id } = useParams();
-  const [newHero, setNewHero] = useState<Hero>({
+  const initialHero: Hero = {
     nickname: '',
     realName: '',
     originDescription: '',
     catchPhrase: '',
     superpowers: '',
     images: [],
-  });
+  };
+  const [newHero, setNewHero] = useState<Hero>(initialHero);
   const [newImage, setNewImage] = useState<string>('');
   const [imageAdded, setImageAdded] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -52,7 +53,8 @@ const NewHeroPage: React.FC = () => {
 
   useEffect(() => {
     if (id) getHero(setNewHero, setError, setIsRequesting, id);
-  }, []);
+    else setNewHero(initialHero);
+  }, [id]);
 
   const onChangeHandler = (key: string, value: string) => {
     setNewHero((oldHero) => {

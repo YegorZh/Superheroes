@@ -1,6 +1,6 @@
 const validateImageLink = (image: string) => {
   const imageLinkRegExp = new RegExp(
-    /(https?:\/\/.*\.(?:png|jpe?g|gif|svg|webp|))/,
+    /^(https?:\/\/.*\.(?:png|jpe?g|gif|svg|webp))$/,
     'i'
   );
   if (!image) return 'You must specify image link before adding an image';
