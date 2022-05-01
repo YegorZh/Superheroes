@@ -15,8 +15,22 @@ import HeroImages from './HeroImages';
 
 const NewHeroPage: React.FC = () => {
   const fields = [
-    { name: 'Nickname:', key: 'nickname', placeholder: 'Spider-Man' },
-    { name: 'Real Name:', key: 'realName', placeholder: 'Peter Parker' },
+    {
+      name: 'Nickname:',
+      key: 'nickname',
+      placeholder: "Write heroes' nickname...",
+    },
+    {
+      name: 'Real Name:',
+      key: 'realName',
+      placeholder: "Write heroes' real name...",
+    },
+    {
+      name: 'Catch Phrase:',
+      key: 'catchPhrase',
+      textfield: true,
+      placeholder: `Write heroes\' catchphrase...`,
+    },
     {
       name: 'Origin Description:',
       key: 'originDescription',
@@ -28,12 +42,6 @@ const NewHeroPage: React.FC = () => {
       key: 'superpowers',
       textfield: true,
       placeholder: "Write heroes' superpowers...",
-    },
-    {
-      name: 'Catch Phrase:',
-      key: 'catchPhrase',
-      textfield: true,
-      placeholder: `“Look, up in the sky, it's a bird, it's a plane, it's Superman!”`,
     },
   ];
 

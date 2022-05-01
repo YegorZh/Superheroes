@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Navigate } from 'react-router';
+import React from 'react';
+import { useNavigate } from 'react-router';
 import IconButton from '../../../../reusable/IconButton';
 
 const HeroCard: React.FC<{
@@ -9,15 +9,13 @@ const HeroCard: React.FC<{
   isRequesting?: boolean;
   onDelete?: React.MouseEventHandler<HTMLButtonElement>;
 }> = ({ name, imageLink, id, onDelete, isRequesting }) => {
-  const [edit, setEdit] = useState<boolean>(false);
-  const [info, setInfo] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   return (
-    <div className="flex h-80 w-56 flex-col gap-2 rounded border-red-700 bg-slate-100 py-1 px-4">
-      {edit && <Navigate to={`/heroes/edit/${id}`} />}
-      {info && <Navigate to={`/heroes/${id}`} />}
+    <div className="flex h-80 w-56 flex-col gap-2 rounded bg-stone-100 py-2 px-4">
       <div className="mb-auto">
         <h3 className="block break-words font-bangers text-2xl">{name}</h3>
-        <div className="h-1 w-full bg-red-700" />
+        <div className="h-1 w-full bg-red-700 " />
       </div>
       <img
         src={imageLink}
@@ -26,11 +24,11 @@ const HeroCard: React.FC<{
       />
       <div className="mt-auto">
         <div className="h-1 w-full bg-red-700" />
-        <div className="flex">
+        <div className="mt-1 flex">
           <IconButton
             className="mr-auto"
             disabled={isRequesting}
-            onClick={() => setEdit(true)}
+            onClick={() => navigate(`/heroes/edit/${id}`)}
           >
             Edit
           </IconButton>
@@ -44,7 +42,7 @@ const HeroCard: React.FC<{
           <IconButton
             className="ml-auto"
             disabled={isRequesting}
-            onClick={() => setInfo(true)}
+            onClick={() => navigate(`/heroes/${id}`)}
           >
             Info
           </IconButton>

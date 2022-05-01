@@ -39,29 +39,28 @@ const HeroesListPage: React.FC = () => {
   return (
     <div className="mt-8 flex h-full w-full flex-col gap-6 px-12 py-8">
       {error && <ErrorMessage message={error} />}
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-8 ">
+      <div className="flex flex-wrap justify-center gap-8">
         {heroList
           ?.slice(
             currentPage * itemsPerPage,
             itemsPerPage + currentPage * itemsPerPage
           )
           .map((hero) => (
-            <div key={hero._id}>
-              <HeroCard
-                name={hero.nickname}
-                imageLink={hero.images[0]}
-                id={hero._id}
-                onDelete={() => {
-                  if (
-                    window.confirm(
-                      `Are you sure you want to delete ${hero.nickname}?`
-                    )
+            <HeroCard
+              key={hero._id}
+              name={hero.nickname}
+              imageLink={hero.images[0]}
+              id={hero._id}
+              onDelete={() => {
+                if (
+                  window.confirm(
+                    `Are you sure you want to delete ${hero.nickname}?`
                   )
-                    setDeleteId({ value: hero._id });
-                }}
-                isRequesting={isRequesting}
-              />
-            </div>
+                )
+                  setDeleteId({ value: hero._id });
+              }}
+              isRequesting={isRequesting}
+            />
           ))}
       </div>
       <div className="mx-auto flex flex-col font-bangers text-xl">
@@ -83,7 +82,9 @@ const HeroesListPage: React.FC = () => {
             >
               {lastPage > -1 &&
                 [...Array(lastPage)].map((_, i) => (
-                  <option value={i}>{i + 1}</option>
+                  <option key={i} value={i}>
+                    {i + 1}
+                  </option>
                 ))}
             </select>
             out of {lastPage < 0 ? '?' : lastPage}
@@ -105,7 +106,9 @@ const HeroesListPage: React.FC = () => {
             }
           >
             {[...Array(Math.min(heroList?.length || 20, 20))].map((_, i) => (
-              <option value={i + 1}>{i + 1}</option>
+              <option key={i} value={i + 1}>
+                {i + 1}
+              </option>
             ))}
           </select>
         </div>

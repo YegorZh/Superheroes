@@ -79,11 +79,15 @@ const HeroImages: React.FC<{
               </IconButton>
               <IconButton
                 onClick={() => {
-                  setNewHero((oldHero) => {
-                    const newHero = { ...oldHero };
-                    newHero.images.splice(i, 1);
-                    return newHero;
-                  });
+                  if (
+                    !window.confirm(
+                      'Are you sure you want to delete this image?'
+                    )
+                  )
+                    return;
+                  const newImages = [...images];
+                  newImages.splice(i, 1);
+                  setNewHero((oldHero) => ({ ...oldHero, images: newImages }));
                 }}
               >
                 X

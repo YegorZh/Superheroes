@@ -27,9 +27,9 @@ const HeroPage: React.FC = () => {
         <div className="mb-2">
           <Separator />
         </div>
-        <div className="flex flex-col justify-between sm:flex-row sm:items-center">
-          <div className="text-stone-700">
-            <SmallTitle text={`${hero.realName || 'unknown'}`} />
+        <div className="flex flex-col justify-between sm:flex-row sm:items-center sm:gap-2">
+          <div className="self-start text-stone-700 sm:whitespace-nowrap">
+            <SmallTitle text={`${hero.realName}`} />
           </div>
           <p className="mt-4 text-center font-bangers text-lg italic tracking-wide text-stone-600 sm:mt-0 sm:text-right">
             {hero.catchPhrase}
